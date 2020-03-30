@@ -17,26 +17,19 @@ namespace HomeworkTemplate
                 int placesAmount = task.DefibliratorStorages.Length;
 
                 float minDistance = float.MaxValue;
-                string storageName = "";
-                string storageLocation = "";
+                string nearestStorageName = "";
+                string nearestStorageLocation = "";
 
                 for (int i = 0; i < placesAmount; i++)
                 {
                     string defibliratorStorage = task.DefibliratorStorages[i];
 
-                    int separatorIndex = defibliratorStorage.IndexOf(';');
-                    string nameStorage = defibliratorStorage.Substring(0, separatorIndex);
-                    defibliratorStorage = defibliratorStorage.Substring(separatorIndex + 1, defibliratorStorage.Length - separatorIndex - 1);
+                    int lastSeparatorIndex = defibliratorStorage.LastIndexOf(';');
+                    int secondSeparatorIndex = defibliratorStorage.Substring(0, lastSeparatorIndex - 1).LastIndexOf(';');
+                    int firstSeparatorIndex = defibliratorStorage.IndexOf(';');
 
-                    separatorIndex = defibliratorStorage.IndexOf(';');
-                    string locationStorage = defibliratorStorage.Substring(0, separatorIndex);
-                    defibliratorStorage = defibliratorStorage.Substring(separatorIndex + 1, defibliratorStorage.Length - separatorIndex - 1);
-
-                    separatorIndex = defibliratorStorage.IndexOf(';');
-                    float longitude = float.Parse(defibliratorStorage.Substring(0, separatorIndex));
-                    defibliratorStorage = defibliratorStorage.Substring(separatorIndex + 1, defibliratorStorage.Length - separatorIndex - 1);
-
-                    float latidute = float.Parse(defibliratorStorage);
+                    float longitude = float.Parse(defibliratorStorage.Substring(secondSeparatorIndex + 1, lastSeparatorIndex - secondSeparatorIndex - 1));
+                    float latidute = float.Parse(defibliratorStorage.Substring(lastSeparatorIndex + 1, defibliratorStorage.Length - lastSeparatorIndex - 1));
 
                     float userLongitude = (float)(float.Parse(UserLongitude) * Math.PI / 180);
                     float userLatitude = (float)(float.Parse(UserLatitude) * Math.PI / 180);
@@ -50,12 +43,13 @@ namespace HomeworkTemplate
                     if(distance < minDistance)
                     {
                         minDistance = distance;
-                        storageName = nameStorage;
-                        storageLocation = locationStorage;
+
+                        nearestStorageName = defibliratorStorage.Substring(0, firstSeparatorIndex);
+                        nearestStorageLocation = defibliratorStorage.Substring(firstSeparatorIndex + 1, secondSeparatorIndex - firstSeparatorIndex - 1);
                     }
                 }
 
-                return $"Name: {storageName}; Address: {storageLocation}";
+                return $"Name: {nearestStorageName}; Address: {nearestStorageLocation}";
             };
 
             Task3.CheckSolver(TaskSolver);
